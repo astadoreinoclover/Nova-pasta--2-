@@ -20,6 +20,14 @@ def incluir_anime():
     temporadas = int(input("Temporadas : "))
     datalan = input("Dt.Lançto(d/m/a): ")
     image = input("Imagem: ")
+
+    respon = requests.get(url3_api)
+    streans = respon.json()
+
+    for strean in streans:
+        print(f"{int(strean['id']):4d}", end=" ")
+        print(f"{strean['nome']:<40}")
+
     stream = input("Transmitido pelo Stream: ")
 
     partes = datalan.split("/")
@@ -27,8 +35,8 @@ def incluir_anime():
 
     dicionario = {"titulo": titulo,
                   "genero": genero,
-                  "episodeos": episodeos, 
-                  "temporadas": temporadas, 
+                  "episodeos": episodeos,
+                  "temporadas": temporadas,
                   "url_image": image,
                   "stream_id": stream,
                   "datalan": dataformatada}
@@ -60,7 +68,6 @@ def incluir_stream():
 
 
 def listar():
-    
 
     response = requests.get(url2_api)
 
@@ -72,7 +79,6 @@ def listar():
 
     print("Cód. Título do anime......................: Gênero..................: Episodios.........: Temporadas:...... Data Lanç.")
 
-    # ordena pelo campo titulo
     animes2 = sorted(animes, key=lambda animes: animes['titulo'])
 
     for anime in animes2:
@@ -87,7 +93,6 @@ def listar():
 
 
 def agrupar():
-    
 
     response = requests.get(url2_api)
 
@@ -109,11 +114,11 @@ def agrupar():
             numeros.append(1)
 
     for gen, num in zip(generos, numeros):
-        print(f"{gen}: {num}")        
-        
+        print(f"{gen}: {num}")
+
 
 def pesquisar_porPalavra():
-    
+
     palavras = input("Palavras Chave: ").lower()
 
     partes = palavras.split(" ")
@@ -142,7 +147,7 @@ def pesquisar_porPalavra():
             print(f"{int(anime['episodeos']):>5d} eps", end=" ")
             print(f"{int(anime['temporadas']):12d}", end=" ")
             print(f"             {dataformatada}")
-            
+
     for anime in animes:
         partes = anime["titulo"].lower().split(" ")
         titulo_set = set(partes)
@@ -175,7 +180,7 @@ def agrupar_porStream():
                 anime_count_by_stream[stream_id] = 1
             else:
                 anime_count_by_stream[stream_id] += 1
-            
+
             stream_nomes[stream_id] = stream_nome
 
         for stream_id, count in anime_count_by_stream.items():
@@ -217,7 +222,7 @@ def mostrar_capa():
         print(f"{int(anime['episodeos']):>5d} eps", end=" ")
         print(f"{int(anime['temporadas']):12d}", end=" ")
         print(f"             {dataformatada}")
-    
+
     id = int(input("Id do anime que deseja: : "))
 
     for anime in data:
@@ -229,8 +234,8 @@ def mostrar_capa():
 
 while True:
     print("---------- Cadastro de Animes ----------")
-    print("|1. Inclusão de animes                 |")
-    print("|2. Inclusão de Stream                 |")
+    print("|1. Inclusão de Stream                 |")
+    print("|2. Inclusão de animes                 |")
     print("|3. Listagem de animes                 |")
     print("|4. Agrupar por Gênero                 |")
     print("|5. Agrupar por Stream                 |")
@@ -241,9 +246,9 @@ while True:
     print("|______________________________________|")
     opcao = int(input("Opção: "))
     if opcao == 1:
-        incluir_anime()
-    elif opcao == 2:
         incluir_stream()
+    elif opcao == 2:
+        incluir_anime()
     elif opcao == 3:
         listar()
     elif opcao == 4:
