@@ -1,6 +1,7 @@
 import requests
 from PIL import Image
 from urllib.request import urlopen
+from bs4 import BeautifulSoup
 
 
 url_api = "http://localhost:3000/anime"
@@ -11,6 +12,35 @@ url3_api = "http://localhost:3000/streans"
 
 url4_api = "http://localhost:3000/stream"
 
+url = 'https://myanimelist.net/topanime.php'
+
+def top():
+
+    response = requests.get(url)
+    u = requests.get(url2_api)
+    animes = u.json()
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        table = soup.find('table')
+        filmes = []
+
+        for row in table.find_all('tr')[1:]:
+            columns = row.find_all('td')
+            rank = columns[0].text.strip()
+            titulo = columns[1].text.strip()
+            filmes.append({'rank': rank, 'nome': titulo})
+
+
+        for anime in animes:
+            nome = anime['titulo']
+            for filme in filmes:
+                if nome in filme['nome']:
+                    print(filme['rank'], end = ' ')
+                    print(anime['titulo'])
+
+    else:
+        print('Falha ao obter a página. Status code:', response.status_code)
 
 def incluir_anime():
 
@@ -241,8 +271,9 @@ while True:
     print("|5. Agrupar por Stream                 |")
     print("|6. Pesquisar por palavras chave       |")
     print("|7. Pesquisar por Stream               |")
-    print("|8. Mostrar capa                       |")
-    print("|9. Finalizar                          |")
+    print("|8. Entre os 50 melhores               |")
+    print("|9. Mostrar capa                       |")
+    print("|10. Finalizar                         |")
     print("|______________________________________|")
     opcao = int(input("Opção: "))
     if opcao == 1:
@@ -260,9 +291,13 @@ while True:
     elif opcao == 7:
         pesquisa_porStream()
     elif opcao == 8:
-        mostrar_capa()
+        top()
     elif opcao == 9:
+        mostrar_capa()
+    elif opcao == 10:
         break
     else:
        print(f'"{opcao}" esta não é uma opção')
+
+
 
